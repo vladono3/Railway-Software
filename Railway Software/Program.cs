@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Railway_Software.Client;
-using static Railway_Software.Employee;
+using static Railway_Software.Tickets;
 namespace Railway_Software
 {
     class Program
@@ -14,8 +14,8 @@ namespace Railway_Software
             Client c1 = new Client("Vlad", "Onofrei", 20);
             c1.PrintClient();
 
-            Employee e1 = new Employee("Ruth", "Candi", 20);
-            e1.PrintClient();
+            Tickets t1 = new Tickets("Suceava", "Bucuresti", 1741283548, 1741161001, 230);
+            t1.PrintInfo();
         }
     }
 }
