@@ -12,10 +12,10 @@ namespace Railway_Software
         static void Main(string[] args)
         {
             Client c1 = new Client("Vlad", "Onofrei", 20);
-            c1.PrintClient();
+            Console.WriteLine(c1.ReturnClient);
 
             Tickets t1 = new Tickets("Suceava", "Bucuresti", 1741283548, 1741161001, 230);
-            t1.PrintInfo();
+            Console.WriteLine(t1.ReturnTicket);
         }
     }
 }

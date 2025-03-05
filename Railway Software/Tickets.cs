@@ -18,9 +18,10 @@ namespace Railway_Software
         int[] connecting_routes;
         int price;
 
-        public void PrintInfo()
+        public string ReturnTicket
         {
-            Console.WriteLine($"Ticket: {starting_station} to {end_station} Departures at -> {departure_date}; Arrives at -> {arrival_date}. Price -> {price} ");
+            get { return $"Ticket: {starting_station} to {end_station} Departures at -> {departure_date}; Arrives at -> {arrival_date}. Price -> {price} "; }
+            set { }
         }
 
         public Tickets()
@@ -37,6 +38,7 @@ namespace Railway_Software
             arrival_date = _arrival_date;
             client_id = 0;
             price = _price;
+            //Comment
         }
     }
 }

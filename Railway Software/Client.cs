@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,9 +15,16 @@ namespace Railway_Software
         string last_name;
         int age;
 
-        public void PrintClient()
+        public string GetFullName
         {
-            Console.WriteLine($"Client: {name} {last_name} age: {age}");
+            get { return name + " " + last_name; }
+            set { }
+        }
+
+        public string ReturnClient
+        {
+            get { return $"Client: {name} {last_name} age: {age}"; }
+            set { }
         }
 
         public Client()
