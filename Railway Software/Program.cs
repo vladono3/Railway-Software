@@ -14,7 +14,7 @@ namespace Railway_Software
             Client c1 = new Client("Vlad", "Onofrei", 20);
             Console.WriteLine(c1.ReturnClient);
 
-            Tickets t1 = new Tickets("Suceava", "Bucuresti", 1741283548, 1741161001, 230);
+            Tickets t1 = new Tickets("Suceava", "Bucuresti", new DateTime(2025, 02, 25, 10, 30, 0), new DateTime(2025, 02, 25, 13, 45, 0), 230);
             Console.WriteLine(t1.ReturnTicket);
         }
     }
