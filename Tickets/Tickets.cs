@@ -2,7 +2,7 @@
 
 namespace Railway_Software
 {
-    class Tickets
+    public class Tickets
     {
         int id;
         string starting_station;
