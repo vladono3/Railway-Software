@@ -1,4 +1,4 @@
-﻿namespace ModelLibrary.Enum
+﻿namespace ModelLibrary.Enums
 {
     public enum AccountType
     {

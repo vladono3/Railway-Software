@@ -23,6 +23,7 @@ namespace Database
 
         public void AddClient(Client client)
         {
+            Console.WriteLine(client.accountType);
             using (StreamWriter streamWriterFisierText = new StreamWriter(fileName, true))
             {
                 streamWriterFisierText.WriteLine(client.FileStringConversion());

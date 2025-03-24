@@ -4,36 +4,31 @@ namespace ModelLibrary
 {
     public class Ticket
     {
-        int id;
-        string starting_station;
-        string end_station;
-        int client_id;
-        DateTime departure_date;
-        DateTime arrival_date;
-        int[] connecting_routes;
-        int price;
+        public int Id { get; set; }
+        public string StartingStation { get; set; }
+        public string EndStation { get; set; }
+        public DateTime DepartureDate { get; set; }
+        public DateTime ArrivalDate { get; set; }
+        public int Price { get; set; }
+        public int ClientId { get; set; }
+        public TicketFeatures Features { get; set; }
 
-        public string ReturnTicket
+        public Ticket(int id, string start, string end, DateTime depart, DateTime arrive, int price, TicketFeatures features)
         {
-            get { return $"Ticket: {starting_station} to {end_station} Departures at -> {departure_date}; Arrives at -> {arrival_date}. Price -> {price} "; }
-            set { }
+            Id = id;
+            StartingStation = start;
+            EndStation = end;
+            DepartureDate = depart;
+            ArrivalDate = arrive;
+            Price = price;
+            Features = features;
+            ClientId = 0;
         }
 
-        public Ticket()
+        public string Info()
         {
-            starting_station = end_station = string.Empty;
-            departure_date = arrival_date = DateTime.MinValue;
-            price = 0;
-        }
-
-        public Ticket(string _starting_station, string _end_station, DateTime _departure_date, DateTime _arrival_date, int _price)
-        {
-            starting_station = _starting_station;
-            end_station = _end_station;
-            departure_date = _departure_date;
-            arrival_date = _arrival_date;
-            client_id = 0;
-            price = _price;
+            return $"Ticket #{Id}: {StartingStation} → {EndStation}, Departure: {DepartureDate}, Arrival: {ArrivalDate}, Price: {Price}, Features: {Features}";
         }
     }
+
 }

@@ -1,4 +1,4 @@
-﻿using ModelLibrary.Enum;
+﻿using ModelLibrary.Enums;
 using System;
 
 namespace ModelLibrary
@@ -47,14 +47,13 @@ namespace ModelLibrary
 
         public string FileStringConversion()
         {
-            string objectClientFile = string.Format("{1}{0}{2}{0}{3}{0}{4}",
+            string objectClientFile = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}",
                 FILE_SEPARATOR,
                 id.ToString(),
                 (name ?? " UNKNOWN "),
                 (last_name ?? " UNKNOWN "),
                 age.ToString(),
                 accountType);
-
             return objectClientFile;
         }
 
@@ -66,7 +65,7 @@ namespace ModelLibrary
             this.name = fileData[NAME];
             this.last_name = fileData[LAST_NAME];
             this.age = Convert.ToInt32(fileData[AGE]);
-            this.accountType = (AccountType)AccountType.Parse(typeof(AccountType), fileData[ACCOUNT_TYPE]);
+            this.accountType = (AccountType)Enum.Parse(typeof(AccountType), fileData[ACCOUNT_TYPE]);
         }
 
         public Client(string _name, string _last_name, int _age)

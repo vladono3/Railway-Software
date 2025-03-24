@@ -41,7 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enum\AccountType.cs" />
+    <Compile Include="Enums\AccountType.cs" />
+    <Compile Include="Enums\TicketFeatures.cs" />
     <Compile Include="Ticket.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
