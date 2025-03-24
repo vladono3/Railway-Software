@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Configuration;
 using System.Dynamic;
+
+using ModelLibrary;
+using ModelLibrary.Enum;
+using Database;
+
 namespace Railway_Software
 {
     class Program
@@ -11,33 +16,85 @@ namespace Railway_Software
             //Open clients database
             string fileName = ConfigurationManager.AppSettings["clients"];
             ClientsAdministration adminClients = new ClientsAdministration(fileName);
-                
 
-            Client c1 = new Client("Vlad", "Onofrei", 20);
+            Client newClient = new Client();
 
-            //Client add in database
-            int idStudent = ++nrClients;
-            c1.id = idStudent;
-            adminClients.AddStudent(c1);
+            string option;
+            do
+            {
+                Console.WriteLine("C. Read client info from keyboard");
+                Console.WriteLine("I. Show last client info saved");
+                Console.WriteLine("A. Print clients from file");
+                Console.WriteLine("S. Save client in array of objects");
+                Console.WriteLine("X. Close program");
 
-            //Clients read
-            Client[] clients = adminClients.GetClients(out nrClients);
-            PrintClients(clients, nrClients);
-            
+                Console.WriteLine("Choose an option");
+                option = Console.ReadLine();
 
-            Tickets t1 = new Tickets("Suceava", "Bucuresti", new DateTime(2025, 02, 25, 10, 30, 0), new DateTime(2025, 02, 25, 13, 45, 0), 230);
-            Console.WriteLine(t1.ReturnTicket);
+                switch (option.ToUpper())
+                {
+                    case "C":
+                        newClient = ReadClientInfoKeyboard();
 
+                        break;
+                    case "I":
+                        PrintClient(newClient);
 
+                        break;
+                    case "A":
+                        Client[] clients = adminClients.GetClients(out nrClients);
+                        PrintClients(clients, nrClients);
+
+                        break;
+                    case "S":
+                        int idClient = ++nrClients;
+                        newClient.id = idClient;
+                        adminClients.AddClient(newClient);
+
+                        break;
+                    case "X":
+                        return;
+                    default:
+                        Console.WriteLine("Unknown option");
+                        break;
+                }
+            } while (option.ToUpper() != "X");
+
+            Console.ReadKey();
         }
 
-
-        public static void PrintClient(Client client)
+        public static Client ReadClientInfoKeyboard()
         {
-            string infoStudent = string.Format("Client with id #{0} and the name: {1} {2}",
-                    client.id,
-                    client.name ?? " UNKNOWN ",
-                    client.last_name ?? " UNKNOWN ");
+            Console.WriteLine("Name:");
+            string name = Console.ReadLine();
+
+            Console.WriteLine("Last name:");
+            string last_name = Console.ReadLine();
+
+            Console.WriteLine("Age:");
+            int age = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("Choose account type:");
+            Console.WriteLine("1 - Adult \n" +
+            "2 - Student \n" +
+            "3 - Children \n" +
+            "4 - Retired \n");
+            int type_option = Convert.ToInt32(Console.ReadLine());
+
+            Client client = new Client(name, last_name, age);
+
+            client.accountType = (AccountType)type_option;
+            return client;
+        }
+
+   public static void PrintClient(Client client)
+        {
+            string infoStudent = string.Format("Client with id #{0} and the name: {1} {2} age: {3} and account type: {4}",
+               client.id,
+               client.name ?? " UNKNOWN ",
+               client.last_name ?? " UNKNOWN ",
+               client.age,
+               client.accountType);
 
             Console.WriteLine(infoStudent);
         }

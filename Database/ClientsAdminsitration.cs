@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Railway_Software
+using ModelLibrary;
+
+namespace Database
 {
     public class ClientsAdministration
     {
@@ -19,7 +21,7 @@ namespace Railway_Software
             streamFisierText.Close();
         }
 
-        public void AddStudent(Client client)
+        public void AddClient(Client client)
         {
             using (StreamWriter streamWriterFisierText = new StreamWriter(fileName, true))
             {
