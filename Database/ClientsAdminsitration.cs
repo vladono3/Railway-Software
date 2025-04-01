@@ -32,19 +32,43 @@ namespace Database
 
         public Client[] GetClients(out int nrClients)
         {
+            // Initialize the array to store up to MAX_CLIENTS
             Client[] studenti = new Client[MAX_CLIENTS];
-            using (StreamReader streamReader = new StreamReader(fileName))
+            nrClients = 0;
+            try
             {
-                string linieFisier;
-                nrClients = 0;
-
-                while ((linieFisier = streamReader.ReadLine()) != null)
+                // Open the file to read the clients
+                using (StreamReader streamReader = new StreamReader(fileName))
                 {
-                    studenti[nrClients++] = new Client(linieFisier);
+                    string linieFisier;
+
+                    // Read each line from the file
+                    while ((linieFisier = streamReader.ReadLine()) != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(linieFisier))
+                        {
+                            // Add the client if there's space available in the array
+                            if (nrClients < MAX_CLIENTS)
+                            {
+                                studenti[nrClients++] = new Client(linieFisier);
+                            }
+                            else
+                            {
+                                // If MAX_CLIENTS is reached, break the loop
+                                break;
+                            }
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading client data: {ex.Message}");
+            }
 
-            return studenti;
+            // Return only the initialized portion of the array (non-null clients)
+            return studenti.Take(nrClients).ToArray();
         }
+
     }
 }
