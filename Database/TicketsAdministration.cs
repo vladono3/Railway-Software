@@ -10,6 +10,7 @@ namespace ModelLibrary
     {
         private static string filePath = "tickets.txt";
         private static List<Ticket> tickets = new List<Ticket>();
+        private static List<Ticket> templateTickets = new List<Ticket>(); // Ticket templates
         private static int nextTicketId = 1;
 
         static TicketsAdministration()
@@ -17,49 +18,103 @@ namespace ModelLibrary
             LoadTicketsFromFile(); // Load tickets when the class is initialized
         }
 
+        // Add a new ticket template
         public static void AddTicket(Ticket ticket)
         {
             ticket.Id = nextTicketId++;
-            tickets.Add(ticket);
-            SaveTicketsToFile(); 
-            Console.WriteLine("Ticket added successfully!");
+            ticket.IsTemplate = true;
+            templateTickets.Add(ticket);
+            SaveTicketsToFile();
+            Console.WriteLine("Ticket template added successfully!");
         }
 
-        public static bool BuyTicket(int ticketId, int clientId)
+        // For backward compatibility, maintain a GetTickets method that returns templates
+        public static Ticket[] GetTickets()
         {
-            var ticket = tickets.FirstOrDefault(t => t.Id == ticketId && t.ClientId == 0);
-            if (ticket != null)
+            return GetTicketTemplates();
+        }
+
+        // Buy a ticket based on a template
+        public static bool BuyTicket(int templateTicketId, int clientId, int trainId, string clientName)
+        {
+            var templateTicket = templateTickets.FirstOrDefault(t => t.Id == templateTicketId);
+            if (templateTicket != null)
             {
-                ticket.ClientId = clientId;
+                // Create a new ticket based on the template
+                Ticket purchasedTicket = new Ticket(
+                    nextTicketId++,
+                    templateTicket.StartingStation,
+                    templateTicket.EndStation,
+                    templateTicket.DepartureDate,
+                    templateTicket.ArrivalDate,
+                    templateTicket.Price,
+                    templateTicket.Features,
+                    clientId,
+                    clientName,
+                    trainId
+                );
+
+                tickets.Add(purchasedTicket);
                 SaveTicketsToFile();
                 return true;
             }
             return false;
         }
 
-        public static Ticket[] GetTickets()
+        // Assign a train to a purchased ticket
+        public static bool AssignTrainToTicket(int ticketId, int trainId)
         {
-            return tickets.Where(t => t.ClientId == 0).ToArray(); // Available tickets
+            var ticket = tickets.FirstOrDefault(t => t.Id == ticketId);
+            if (ticket != null)
+            {
+                ticket.TrainId = trainId;
+                SaveTicketsToFile();
+                return true;
+            }
+            return false;
         }
 
+        // Get available ticket templates
+        public static Ticket[] GetTicketTemplates()
+        {
+            return templateTickets.ToArray();
+        }
+
+        // Get all purchased tickets
+        public static Ticket[] GetPurchasedTickets()
+        {
+            return tickets.ToArray();
+        }
+
+        // Get tickets purchased by a specific client
         public static Ticket[] GetTicketsByClientId(int clientId)
         {
-            return tickets.Where(t => t.ClientId == clientId).ToArray(); // Tickets purchased by a client
+            return tickets.Where(t => t.ClientId == clientId).ToArray();
         }
 
         private static void SaveTicketsToFile()
         {
             using (StreamWriter writer = new StreamWriter(filePath))
             {
+                // Save template tickets
+                foreach (var ticket in templateTickets)
+                {
+                    writer.WriteLine($"TEMPLATE,{ticket.Id},{ticket.StartingStation},{ticket.EndStation},{ticket.DepartureDate},{ticket.ArrivalDate},{ticket.Price},{(int)ticket.Features}");
+                }
+
+                // Save purchased tickets
                 foreach (var ticket in tickets)
                 {
-                    writer.WriteLine($"{ticket.Id},{ticket.StartingStation},{ticket.EndStation},{ticket.DepartureDate},{ticket.ArrivalDate},{ticket.Price},{ticket.ClientId},{(int)ticket.Features}");
+                    writer.WriteLine($"PURCHASED,{ticket.Id},{ticket.StartingStation},{ticket.EndStation},{ticket.DepartureDate},{ticket.ArrivalDate},{ticket.Price},{ticket.ClientId},{ticket.ClientName},{ticket.TrainId},{(int)ticket.Features}");
                 }
             }
         }
 
         private static void LoadTicketsFromFile()
         {
+            templateTickets.Clear();
+            tickets.Clear();
+
             if (!File.Exists(filePath)) return;
 
             var lines = File.ReadAllLines(filePath);
@@ -67,21 +122,48 @@ namespace ModelLibrary
             {
                 var parts = line.Split(',');
 
-                if (parts.Length == 8)
+                if (parts[0] == "TEMPLATE" && parts.Length >= 8)
                 {
                     try
                     {
-                        int id = int.Parse(parts[0]);
-                        string startingStation = parts[1];
-                        string endStation = parts[2];
-                        DateTime departureDate = DateTime.Parse(parts[3]);
-                        DateTime arrivalDate = DateTime.Parse(parts[4]);
-                        int price = int.Parse(parts[5]);
-                        int clientId = int.Parse(parts[6]);
+                        int id = int.Parse(parts[1]);
+                        string startingStation = parts[2];
+                        string endStation = parts[3];
+                        DateTime departureDate = DateTime.Parse(parts[4]);
+                        DateTime arrivalDate = DateTime.Parse(parts[5]);
+                        int price = int.Parse(parts[6]);
                         TicketFeatures features = (TicketFeatures)Enum.ToObject(typeof(TicketFeatures), int.Parse(parts[7]));
 
                         Ticket ticket = new Ticket(id, startingStation, endStation, departureDate, arrivalDate, price, features);
-                        ticket.ClientId = clientId;
+                        ticket.IsTemplate = true;
+                        templateTickets.Add(ticket);
+
+                        // Update nextTicketId to the highest ID in the file
+                        if (id >= nextTicketId)
+                            nextTicketId = id + 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error loading ticket template: {ex.Message}");
+                    }
+                }
+                else if (parts[0] == "PURCHASED" && parts.Length >= 11)
+                {
+                    try
+                    {
+                        int id = int.Parse(parts[1]);
+                        string startingStation = parts[2];
+                        string endStation = parts[3];
+                        DateTime departureDate = DateTime.Parse(parts[4]);
+                        DateTime arrivalDate = DateTime.Parse(parts[5]);
+                        int price = int.Parse(parts[6]);
+                        int clientId = int.Parse(parts[7]);
+                        string clientName = parts[8];
+                        int trainId = int.Parse(parts[9]);
+                        TicketFeatures features = (TicketFeatures)Enum.ToObject(typeof(TicketFeatures), int.Parse(parts[10]));
+
+                        Ticket ticket = new Ticket(id, startingStation, endStation, departureDate, arrivalDate, price, features, clientId, clientName, trainId);
+                        ticket.IsTemplate = false;
                         tickets.Add(ticket);
 
                         // Update nextTicketId to the highest ID in the file
@@ -90,7 +172,7 @@ namespace ModelLibrary
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error loading ticket: {ex.Message}");
+                        Console.WriteLine($"Error loading purchased ticket: {ex.Message}");
                     }
                 }
             }

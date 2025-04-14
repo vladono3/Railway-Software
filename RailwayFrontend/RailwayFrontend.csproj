@@ -92,6 +92,10 @@
       <Project>{b83da462-1910-4db1-a314-ceb76c76c219}</Project>
       <Name>ModelLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Railway Software\Railway Software.csproj">
+      <Project>{38313348-b9e4-496f-b005-b4045b9c621f}</Project>
+      <Name>Railway Software</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

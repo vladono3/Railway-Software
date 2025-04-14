@@ -167,7 +167,7 @@ namespace Railway_Software
 
         public static void ShowAvailableTickets()
         {
-            Ticket[] availableTickets = TicketsAdministration.GetTickets();
+            Ticket[] availableTickets = TicketsAdministration.GetTicketTemplates();
 
             if (availableTickets.Length == 0)
             {
@@ -192,7 +192,7 @@ namespace Railway_Software
             Console.WriteLine("Enter your client ID:");
             int clientId = Convert.ToInt32(Console.ReadLine());
 
-            bool success = TicketsAdministration.BuyTicket(ticketId, clientId);
+            bool success = TicketsAdministration.BuyTicket(ticketId, clientId, 1, "Onofrie Vlad");
             Console.WriteLine(success ? "Ticket purchased successfully!" : "Invalid ticket ID or ticket already sold.");
         }
 
